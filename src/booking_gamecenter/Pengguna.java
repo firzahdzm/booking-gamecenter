@@ -24,5 +24,9 @@ public abstract class Pengguna {
         return password.equals(input);
     }
 
+    public String keCsv() {
+        return getRole() + ";" + nama + ";" + username + ";" + password;
+    }
+
     public abstract String getRole();
 }

@@ -1,5 +1,11 @@
 package booking_gamecenter;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,6 +19,9 @@ public final class DataStore {
     public static final int HARI_KE_DEPAN = 6;
     public static final DateTimeFormatter FORMAT_TANGGAL = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
+    private static final File FILE_AKUN = new File("data/akun.csv");
+    private static final File FILE_BOOKING = new File("data/booking.csv");
+
     private static final ArrayList<Pengguna> daftarAkun = new ArrayList<>();
     private static final ArrayList<Konsol> daftarKonsol = new ArrayList<>();
     private static final ArrayList<Station> daftarStation = new ArrayList<>();
@@ -20,12 +29,6 @@ public final class DataStore {
     private static int nextId = 1;
 
     static {
-        daftarAkun.add(new Admin("Administrator", "admin", "admin123"));
-        daftarAkun.add(new Member("Firza", "firza", "firza123"));
-        daftarAkun.add(new Member("Banis", "banis", "banis123"));
-        daftarAkun.add(new Member("Nanda", "nanda", "nanda123"));
-        daftarAkun.add(new Member("Ilham", "ilham", "ilham123"));
-
         Konsol ps5 = new PS5();
         Konsol ps4 = new PS4();
         Konsol nintendo = new Nintendo();
@@ -45,6 +48,116 @@ public final class DataStore {
         daftarStation.add(new Station("NS-02", nintendo));
         daftarStation.add(new Station("XB-01", xbox));
         daftarStation.add(new Station("XB-02", xbox));
+
+        if (FILE_AKUN.exists()) {
+            muatAkun();
+        } else {
+            daftarAkun.add(new Admin("Administrator", "admin", "admin123"));
+            daftarAkun.add(new Member("Firza", "firza", "firza123"));
+            daftarAkun.add(new Member("Banis", "banis", "banis123"));
+            daftarAkun.add(new Member("Nanda", "nanda", "nanda123"));
+            daftarAkun.add(new Member("Ilham", "ilham", "ilham123"));
+            simpanAkun();
+        }
+        if (FILE_BOOKING.exists()) {
+            muatBooking();
+        }
+    }
+
+    private static void muatAkun() {
+        daftarAkun.clear();
+        try (BufferedReader pembaca = new BufferedReader(new FileReader(FILE_AKUN))) {
+            String baris;
+            while ((baris = pembaca.readLine()) != null) {
+                if (baris.isBlank()) {
+                    continue;
+                }
+                String[] kolom = baris.split(";");
+                if (kolom.length < 4) {
+                    continue;
+                }
+                if (kolom[0].equals("ADMIN")) {
+                    daftarAkun.add(new Admin(kolom[1], kolom[2], kolom[3]));
+                } else {
+                    daftarAkun.add(new Member(kolom[1], kolom[2], kolom[3]));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Gagal membaca " + FILE_AKUN + ": " + e.getMessage());
+        }
+    }
+
+    private static void muatBooking() {
+        daftarBooking.clear();
+        try (BufferedReader pembaca = new BufferedReader(new FileReader(FILE_BOOKING))) {
+            String baris;
+            while ((baris = pembaca.readLine()) != null) {
+                if (baris.isBlank()) {
+                    continue;
+                }
+                String[] kolom = baris.split(";");
+                if (kolom.length < 7) {
+                    continue;
+                }
+                Member pemesan = cariMember(kolom[1]);
+                Station station = cariStation(kolom[2]);
+                if (pemesan == null || station == null) {
+                    continue;
+                }
+                Booking b = new Booking(Integer.parseInt(kolom[0]), pemesan, station,
+                        LocalDate.parse(kolom[3]), Integer.parseInt(kolom[4]),
+                        Integer.parseInt(kolom[5]));
+                if (kolom[6].equals(StatusBooking.DIBATALKAN.toString())) {
+                    b.batalkan();
+                }
+                daftarBooking.add(b);
+                if (b.getId() >= nextId) {
+                    nextId = b.getId() + 1;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Gagal membaca " + FILE_BOOKING + ": " + e.getMessage());
+        }
+    }
+
+    private static void simpanAkun() {
+        FILE_AKUN.getParentFile().mkdirs();
+        try (PrintWriter penulis = new PrintWriter(new FileWriter(FILE_AKUN))) {
+            for (Pengguna p : daftarAkun) {
+                penulis.println(p.keCsv());
+            }
+        } catch (IOException e) {
+            System.err.println("Gagal menyimpan " + FILE_AKUN + ": " + e.getMessage());
+        }
+    }
+
+    private static void simpanBooking() {
+        FILE_BOOKING.getParentFile().mkdirs();
+        try (PrintWriter penulis = new PrintWriter(new FileWriter(FILE_BOOKING))) {
+            for (Booking b : daftarBooking) {
+                penulis.println(b.keCsv());
+            }
+        } catch (IOException e) {
+            System.err.println("Gagal menyimpan " + FILE_BOOKING + ": " + e.getMessage());
+        }
+    }
+
+    private static Member cariMember(String username) {
+        for (Pengguna p : daftarAkun) {
+            if (p instanceof Member && p.getUsername().equals(username)) {
+                return (Member) p;
+            }
+        }
+        return null;
+    }
+
+    private static Station cariStation(String kode) {
+        for (Station s : daftarStation) {
+            if (s.getKode().equals(kode)) {
+                return s;
+            }
+        }
+        return null;
     }
 
     private DataStore() {
@@ -70,6 +183,7 @@ public final class DataStore {
 
     public static void daftarMember(String nama, String username, String password) {
         daftarAkun.add(new Member(nama, username, password));
+        simpanAkun();
     }
 
     public static ArrayList<Konsol> daftarJenisKonsol() {
@@ -104,7 +218,13 @@ public final class DataStore {
         }
         Booking baru = new Booking(nextId++, pemesan, station, tanggal, jamMulai, durasiJam);
         daftarBooking.add(baru);
+        simpanBooking();
         return baru;
+    }
+
+    public static void batalkanBooking(Booking booking) {
+        booking.batalkan();
+        simpanBooking();
     }
 
     public static boolean jamTersedia(Station station, LocalDate tanggal, int jamMulai, int durasiJam) {

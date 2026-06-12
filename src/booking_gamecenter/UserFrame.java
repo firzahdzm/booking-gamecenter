@@ -422,7 +422,7 @@ public class UserFrame extends javax.swing.JFrame {
         int pilihan = JOptionPane.showConfirmDialog(this,
                 "Batalkan Booking #" + id + "?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
         if (pilihan == JOptionPane.YES_OPTION) {
-            dipilih.batalkan();
+            DataStore.batalkanBooking(dipilih);
             refreshTabel();
             perbaruiJamTersedia();
         }

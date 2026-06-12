@@ -65,6 +65,11 @@ public class Booking {
         status = StatusBooking.DIBATALKAN;
     }
 
+    public String keCsv() {
+        return id + ";" + pemesan.getUsername() + ";" + station.getKode() + ";"
+                + tanggal + ";" + jamMulai + ";" + durasiJam + ";" + status;
+    }
+
     public boolean bentrokDengan(Station st, LocalDate tgl, int jam, int durasi) {
         if (status != StatusBooking.AKTIF) {
             return false;
