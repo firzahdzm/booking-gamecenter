@@ -24,6 +24,7 @@ public class UserFrame extends javax.swing.JFrame {
 
     private void gayaUi() {
         Tema.latar(getContentPane());
+        ((javax.swing.JComponent) getContentPane()).setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 10, 16));
         panelBooking.setBackground(Tema.BG);
         panelRiwayat.setBackground(Tema.BG);
         Tema.judul(lblSapaan, 18f);

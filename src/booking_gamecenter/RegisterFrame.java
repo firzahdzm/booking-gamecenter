@@ -80,7 +80,7 @@ public class RegisterFrame extends javax.swing.JFrame {
                     .addComponent(lblKonfirmasi)
                     .addComponent(txtKonfirmasi, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnDaftar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDaftar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnKembali)))
                 .addContainerGap(40, Short.MAX_VALUE))
