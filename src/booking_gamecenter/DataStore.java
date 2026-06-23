@@ -10,6 +10,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Satu file berisi seluruh data & model aplikasi:
+ * - enum {@link JenisKonsol}    : 4 jenis console + harga/jam + deskripsi
+ * - class {@link Station}       : unit tempat main (kode + jenis console)
+ * - class {@link Pengguna}      : akun (role disimpan sebagai String)
+ * - enum {@link StatusBooking}  : AKTIF / DIBATALKAN
+ * - class {@link Booking}       : satu transaksi sewa
+ * - class {@link DataStore}     : penyimpanan (ArrayList) + logika + persistensi CSV
+ */
 public final class DataStore {
 
     public static final int JAM_BUKA = 10;
@@ -23,46 +32,166 @@ public final class DataStore {
     private static final File FILE_BOOKING = new File("data/booking.csv");
 
     private static final ArrayList<Pengguna> daftarAkun = new ArrayList<>();
-    private static final ArrayList<Konsol> daftarKonsol = new ArrayList<>();
     private static final ArrayList<Station> daftarStation = new ArrayList<>();
     private static final ArrayList<Booking> daftarBooking = new ArrayList<>();
     private static int nextId = 1;
 
     static {
-        Konsol ps5 = new PS5();
-        Konsol ps4 = new PS4();
-        Konsol nintendo = new Nintendo();
-        Konsol xbox = new Xbox();
-        daftarKonsol.add(ps5);
-        daftarKonsol.add(ps4);
-        daftarKonsol.add(nintendo);
-        daftarKonsol.add(xbox);
-
-        daftarStation.add(new Station("PS5-01", ps5));
-        daftarStation.add(new Station("PS5-02", ps5));
-        daftarStation.add(new Station("PS5-03", ps5));
-        daftarStation.add(new Station("PS4-01", ps4));
-        daftarStation.add(new Station("PS4-02", ps4));
-        daftarStation.add(new Station("PS4-03", ps4));
-        daftarStation.add(new Station("NS-01", nintendo));
-        daftarStation.add(new Station("NS-02", nintendo));
-        daftarStation.add(new Station("XB-01", xbox));
-        daftarStation.add(new Station("XB-02", xbox));
+        daftarStation.add(new Station("PS5-01", JenisKonsol.PS5));
+        daftarStation.add(new Station("PS5-02", JenisKonsol.PS5));
+        daftarStation.add(new Station("PS5-03", JenisKonsol.PS5));
+        daftarStation.add(new Station("PS4-01", JenisKonsol.PS4));
+        daftarStation.add(new Station("PS4-02", JenisKonsol.PS4));
+        daftarStation.add(new Station("PS4-03", JenisKonsol.PS4));
+        daftarStation.add(new Station("NS-01", JenisKonsol.NINTENDO));
+        daftarStation.add(new Station("NS-02", JenisKonsol.NINTENDO));
+        daftarStation.add(new Station("XB-01", JenisKonsol.XBOX));
+        daftarStation.add(new Station("XB-02", JenisKonsol.XBOX));
 
         if (FILE_AKUN.exists()) {
             muatAkun();
         } else {
-            daftarAkun.add(new Admin("Administrator", "admin", "admin123"));
-            daftarAkun.add(new Member("Firza", "firza", "firza123"));
-            daftarAkun.add(new Member("Banis", "banis", "banis123"));
-            daftarAkun.add(new Member("Nanda", "nanda", "nanda123"));
-            daftarAkun.add(new Member("Ilham", "ilham", "ilham123"));
+            daftarAkun.add(new Pengguna("Administrator", "admin", "admin123", "ADMIN"));
+            daftarAkun.add(new Pengguna("Firza", "firza", "firza123", "MEMBER"));
+            daftarAkun.add(new Pengguna("Banis", "banis", "banis123", "MEMBER"));
+            daftarAkun.add(new Pengguna("Nanda", "nanda", "nanda123", "MEMBER"));
+            daftarAkun.add(new Pengguna("Ilham", "ilham", "ilham123", "MEMBER"));
             simpanAkun();
         }
         if (FILE_BOOKING.exists()) {
             muatBooking();
         }
     }
+
+    private DataStore() {
+    }
+
+    // ---------- Login & akun ----------
+
+    public static Pengguna login(String username, String password) {
+        for (Pengguna p : daftarAkun) {
+            if (p.getUsername().equals(username) && p.cekPassword(password)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public static boolean usernameDipakai(String username) {
+        for (Pengguna p : daftarAkun) {
+            if (p.getUsername().equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void daftarMember(String nama, String username, String password) {
+        daftarAkun.add(new Pengguna(nama, username, password, "MEMBER"));
+        simpanAkun();
+    }
+
+    // ---------- Console & station ----------
+
+    public static JenisKonsol[] daftarJenisKonsol() {
+        return JenisKonsol.values();
+    }
+
+    public static ArrayList<Station> stationDenganKonsol(JenisKonsol konsol) {
+        ArrayList<Station> hasil = new ArrayList<>();
+        for (Station s : daftarStation) {
+            if (s.getKonsol() == konsol) {
+                hasil.add(s);
+            }
+        }
+        return hasil;
+    }
+
+    public static ArrayList<LocalDate> pilihanTanggal() {
+        ArrayList<LocalDate> hasil = new ArrayList<>();
+        LocalDate hariIni = LocalDate.now();
+        for (int i = 0; i <= HARI_KE_DEPAN; i++) {
+            hasil.add(hariIni.plusDays(i));
+        }
+        return hasil;
+    }
+
+    // ---------- Booking ----------
+
+    public static Booking buatBooking(Pengguna pemesan, Station station, LocalDate tanggal,
+            int jamMulai, int durasiJam) {
+        for (Booking b : daftarBooking) {
+            if (b.bentrokDengan(station, tanggal, jamMulai, durasiJam)) {
+                throw new IllegalStateException(pesanBentrok(b));
+            }
+        }
+        Booking baru = new Booking(nextId++, pemesan, station, tanggal, jamMulai, durasiJam);
+        daftarBooking.add(baru);
+        simpanBooking();
+        return baru;
+    }
+
+    public static void batalkanBooking(Booking booking) {
+        booking.batalkan();
+        simpanBooking();
+    }
+
+    public static boolean jamTersedia(Station station, LocalDate tanggal, int jamMulai, int durasiJam) {
+        for (Booking b : daftarBooking) {
+            if (b.bentrokDengan(station, tanggal, jamMulai, durasiJam)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static ArrayList<Booking> bookingMilik(Pengguna pengguna) {
+        ArrayList<Booking> hasil = new ArrayList<>();
+        for (Booking b : daftarBooking) {
+            if (b.getPemesan().getUsername().equals(pengguna.getUsername())) {
+                hasil.add(b);
+            }
+        }
+        return hasil;
+    }
+
+    public static ArrayList<Booking> semuaBooking() {
+        return new ArrayList<>(daftarBooking);
+    }
+
+    public static int jumlahBookingAktif() {
+        int jumlah = 0;
+        for (Booking b : daftarBooking) {
+            if (b.getStatus() == StatusBooking.AKTIF) {
+                jumlah++;
+            }
+        }
+        return jumlah;
+    }
+
+    private static String pesanBentrok(Booking b) {
+        return "Jadwal bentrok dengan Booking #" + b.getId()
+                + " di " + b.getStation().getKode()
+                + " tanggal " + b.getTanggal().format(FORMAT_TANGGAL)
+                + " jam " + b.getJamMulai() + ":00-" + b.getJamSelesai() + ":00"
+                + " atas nama " + b.getPemesan().getNama() + ".";
+    }
+
+    public static String formatRupiah(int nilai) {
+        String angka = Integer.toString(nilai);
+        StringBuilder hasil = new StringBuilder();
+        int hitung = 0;
+        for (int i = angka.length() - 1; i >= 0; i--) {
+            hasil.insert(0, angka.charAt(i));
+            hitung++;
+            if (hitung % 3 == 0 && i > 0) {
+                hasil.insert(0, '.');
+            }
+        }
+        return "Rp " + hasil;
+    }
+
+    // ---------- Persistensi CSV ----------
 
     private static void muatAkun() {
         daftarAkun.clear();
@@ -76,11 +205,7 @@ public final class DataStore {
                 if (kolom.length < 4) {
                     continue;
                 }
-                if (kolom[0].equals("ADMIN")) {
-                    daftarAkun.add(new Admin(kolom[1], kolom[2], kolom[3]));
-                } else {
-                    daftarAkun.add(new Member(kolom[1], kolom[2], kolom[3]));
-                }
+                daftarAkun.add(new Pengguna(kolom[1], kolom[2], kolom[3], kolom[0]));
             }
         } catch (Exception e) {
             System.err.println("Gagal membaca " + FILE_AKUN + ": " + e.getMessage());
@@ -99,7 +224,7 @@ public final class DataStore {
                 if (kolom.length < 7) {
                     continue;
                 }
-                Member pemesan = cariMember(kolom[1]);
+                Pengguna pemesan = cariPengguna(kolom[1]);
                 Station station = cariStation(kolom[2]);
                 if (pemesan == null || station == null) {
                     continue;
@@ -142,10 +267,10 @@ public final class DataStore {
         }
     }
 
-    private static Member cariMember(String username) {
+    private static Pengguna cariPengguna(String username) {
         for (Pengguna p : daftarAkun) {
-            if (p instanceof Member && p.getUsername().equals(username)) {
-                return (Member) p;
+            if (p.getUsername().equals(username)) {
+                return p;
             }
         }
         return null;
@@ -159,118 +284,192 @@ public final class DataStore {
         }
         return null;
     }
+}
 
-    private DataStore() {
+/** 4 jenis console yang disewakan, masing-masing punya harga/jam dan deskripsi. */
+enum JenisKonsol {
+
+    PS5("PlayStation 5", 15000, "Konsol generasi terbaru Sony, grafis 4K dan loading super cepat."),
+    PS4("PlayStation 4", 10000, "Konsol legendaris Sony dengan koleksi game paling banyak."),
+    NINTENDO("Nintendo Switch", 12000, "Konsol hybrid Nintendo, cocok untuk main ramai-ramai."),
+    XBOX("Xbox Series X", 12000, "Konsol Microsoft dengan performa tinggi dan Xbox Game Pass.");
+
+    private final String nama;
+    private final int hargaPerJam;
+    private final String deskripsi;
+
+    JenisKonsol(String nama, int hargaPerJam, String deskripsi) {
+        this.nama = nama;
+        this.hargaPerJam = hargaPerJam;
+        this.deskripsi = deskripsi;
     }
 
-    public static Pengguna login(String username, String password) {
-        for (Pengguna p : daftarAkun) {
-            if (p.getUsername().equals(username) && p.cekPassword(password)) {
-                return p;
-            }
+    public String getNama() {
+        return nama;
+    }
+
+    public int getHargaPerJam() {
+        return hargaPerJam;
+    }
+
+    public String deskripsi() {
+        return deskripsi;
+    }
+
+    @Override
+    public String toString() {
+        return nama;
+    }
+}
+
+/** Unit tempat main: satu kode (mis. PS5-01) yang memakai satu JenisKonsol. */
+class Station {
+
+    private final String kode;
+    private final JenisKonsol konsol;
+
+    Station(String kode, JenisKonsol konsol) {
+        this.kode = kode;
+        this.konsol = konsol;
+    }
+
+    public String getKode() {
+        return kode;
+    }
+
+    public JenisKonsol getKonsol() {
+        return konsol;
+    }
+
+    public int hitungBiaya(int durasiJam) {
+        return konsol.getHargaPerJam() * durasiJam;
+    }
+
+    @Override
+    public String toString() {
+        return kode + " (" + konsol.getNama() + ")";
+    }
+}
+
+/** Akun pengguna. Role disimpan sebagai String: "ADMIN" atau "MEMBER". */
+class Pengguna {
+
+    private final String nama;
+    private final String username;
+    private final String password;
+    private final String role;
+
+    Pengguna(String nama, String username, String password, String role) {
+        this.nama = nama;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public boolean cekPassword(String input) {
+        return password.equals(input);
+    }
+
+    public String keCsv() {
+        return role + ";" + nama + ";" + username + ";" + password;
+    }
+}
+
+enum StatusBooking {
+    AKTIF, DIBATALKAN
+}
+
+/** Satu transaksi sewa: siapa, station mana, kapan, berapa lama, dan statusnya. */
+class Booking {
+
+    private final int id;
+    private final Pengguna pemesan;
+    private final Station station;
+    private final LocalDate tanggal;
+    private final int jamMulai;
+    private final int durasiJam;
+    private final int totalBiaya;
+    private StatusBooking status;
+
+    Booking(int id, Pengguna pemesan, Station station, LocalDate tanggal,
+            int jamMulai, int durasiJam) {
+        this.id = id;
+        this.pemesan = pemesan;
+        this.station = station;
+        this.tanggal = tanggal;
+        this.jamMulai = jamMulai;
+        this.durasiJam = durasiJam;
+        this.totalBiaya = station.hitungBiaya(durasiJam);
+        this.status = StatusBooking.AKTIF;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Pengguna getPemesan() {
+        return pemesan;
+    }
+
+    public Station getStation() {
+        return station;
+    }
+
+    public LocalDate getTanggal() {
+        return tanggal;
+    }
+
+    public int getJamMulai() {
+        return jamMulai;
+    }
+
+    public int getDurasiJam() {
+        return durasiJam;
+    }
+
+    public int getJamSelesai() {
+        return jamMulai + durasiJam;
+    }
+
+    public int getTotalBiaya() {
+        return totalBiaya;
+    }
+
+    public StatusBooking getStatus() {
+        return status;
+    }
+
+    public void batalkan() {
+        status = StatusBooking.DIBATALKAN;
+    }
+
+    public boolean bentrokDengan(Station st, LocalDate tgl, int jam, int durasi) {
+        if (status != StatusBooking.AKTIF) {
+            return false;
         }
-        return null;
-    }
-
-    public static boolean usernameDipakai(String username) {
-        for (Pengguna p : daftarAkun) {
-            if (p.getUsername().equalsIgnoreCase(username)) {
-                return true;
-            }
+        if (!station.getKode().equals(st.getKode())) {
+            return false;
         }
-        return false;
-    }
-
-    public static void daftarMember(String nama, String username, String password) {
-        daftarAkun.add(new Member(nama, username, password));
-        simpanAkun();
-    }
-
-    public static ArrayList<Konsol> daftarJenisKonsol() {
-        return new ArrayList<>(daftarKonsol);
-    }
-
-    public static ArrayList<Station> stationDenganKonsol(Konsol konsol) {
-        ArrayList<Station> hasil = new ArrayList<>();
-        for (Station s : daftarStation) {
-            if (s.getKonsol().getNama().equals(konsol.getNama())) {
-                hasil.add(s);
-            }
+        if (!tanggal.equals(tgl)) {
+            return false;
         }
-        return hasil;
+        return jam < getJamSelesai() && jamMulai < jam + durasi;
     }
 
-    public static ArrayList<LocalDate> pilihanTanggal() {
-        ArrayList<LocalDate> hasil = new ArrayList<>();
-        LocalDate hariIni = LocalDate.now();
-        for (int i = 0; i <= HARI_KE_DEPAN; i++) {
-            hasil.add(hariIni.plusDays(i));
-        }
-        return hasil;
-    }
-
-    public static Booking buatBooking(Member pemesan, Station station, LocalDate tanggal,
-            int jamMulai, int durasiJam) throws BentrokException {
-        for (Booking b : daftarBooking) {
-            if (b.bentrokDengan(station, tanggal, jamMulai, durasiJam)) {
-                throw new BentrokException(b);
-            }
-        }
-        Booking baru = new Booking(nextId++, pemesan, station, tanggal, jamMulai, durasiJam);
-        daftarBooking.add(baru);
-        simpanBooking();
-        return baru;
-    }
-
-    public static void batalkanBooking(Booking booking) {
-        booking.batalkan();
-        simpanBooking();
-    }
-
-    public static boolean jamTersedia(Station station, LocalDate tanggal, int jamMulai, int durasiJam) {
-        for (Booking b : daftarBooking) {
-            if (b.bentrokDengan(station, tanggal, jamMulai, durasiJam)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static ArrayList<Booking> bookingMilik(Member member) {
-        ArrayList<Booking> hasil = new ArrayList<>();
-        for (Booking b : daftarBooking) {
-            if (b.getPemesan().getUsername().equals(member.getUsername())) {
-                hasil.add(b);
-            }
-        }
-        return hasil;
-    }
-
-    public static ArrayList<Booking> semuaBooking() {
-        return new ArrayList<>(daftarBooking);
-    }
-
-    public static int jumlahBookingAktif() {
-        int jumlah = 0;
-        for (Booking b : daftarBooking) {
-            if (b.getStatus() == StatusBooking.AKTIF) {
-                jumlah++;
-            }
-        }
-        return jumlah;
-    }
-
-    public static String formatRupiah(int nilai) {
-        String angka = Integer.toString(nilai);
-        StringBuilder hasil = new StringBuilder();
-        int hitung = 0;
-        for (int i = angka.length() - 1; i >= 0; i--) {
-            hasil.insert(0, angka.charAt(i));
-            hitung++;
-            if (hitung % 3 == 0 && i > 0) {
-                hasil.insert(0, '.');
-            }
-        }
-        return "Rp " + hasil;
+    public String keCsv() {
+        return id + ";" + pemesan.getUsername() + ";" + station.getKode() + ";"
+                + tanggal + ";" + jamMulai + ";" + durasiJam + ";" + status;
     }
 }

@@ -122,10 +122,10 @@ public class LoginFrame extends javax.swing.JFrame {
             return;
         }
 
-        if (pengguna instanceof Admin) {
+        if ("ADMIN".equals(pengguna.getRole())) {
             new AdminFrame().setVisible(true);
         } else {
-            new UserFrame((Member) pengguna).setVisible(true);
+            new UserFrame(pengguna).setVisible(true);
         }
         dispose();
     }//GEN-LAST:event_btnMasukActionPerformed

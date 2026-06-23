@@ -7,10 +7,10 @@ import javax.swing.table.DefaultTableModel;
 
 public class UserFrame extends javax.swing.JFrame {
 
-    private final Member member;
+    private final Pengguna member;
     private final ArrayList<LocalDate> listTanggal = DataStore.pilihanTanggal();
 
-    public UserFrame(Member member) {
+    public UserFrame(Pengguna member) {
         this.member = member;
         initComponents();
         lblSapaan.setFont(lblSapaan.getFont().deriveFont(java.awt.Font.BOLD, 16f));
@@ -48,7 +48,7 @@ public class UserFrame extends javax.swing.JFrame {
     }
 
     private void muatPilihan() {
-        for (Konsol k : DataStore.daftarJenisKonsol()) {
+        for (JenisKonsol k : DataStore.daftarJenisKonsol()) {
             cmbKonsol.addItem(k);
         }
         for (LocalDate t : listTanggal) {
@@ -57,7 +57,7 @@ public class UserFrame extends javax.swing.JFrame {
     }
 
     private void perbaruiInfoKonsol() {
-        Konsol konsol = (Konsol) cmbKonsol.getSelectedItem();
+        JenisKonsol konsol = (JenisKonsol) cmbKonsol.getSelectedItem();
         if (konsol == null) {
             return;
         }
@@ -412,7 +412,7 @@ public class UserFrame extends javax.swing.JFrame {
                     "Struk Booking", JOptionPane.INFORMATION_MESSAGE);
             refreshTabel();
             perbaruiJamTersedia();
-        } catch (BentrokException e) {
+        } catch (IllegalStateException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(),
                     "Jadwal Bentrok", JOptionPane.ERROR_MESSAGE);
         }
@@ -460,7 +460,7 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JComboBox<String> cmbJam;
-    private javax.swing.JComboBox<Konsol> cmbKonsol;
+    private javax.swing.JComboBox<JenisKonsol> cmbKonsol;
     private javax.swing.JComboBox<Station> cmbStation;
     private javax.swing.JComboBox<String> cmbTanggal;
     private javax.swing.JLabel lblDeskripsi;
