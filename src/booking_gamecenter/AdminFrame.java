@@ -3,7 +3,6 @@ package booking_gamecenter;
 import javax.swing.table.DefaultTableModel;
 
 public class AdminFrame extends javax.swing.JFrame {
-
     public AdminFrame() {
         initComponents();
         refreshTabel();
@@ -51,9 +50,7 @@ public class AdminFrame extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         lblJudul = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
         scrSemua = new javax.swing.JScrollPane();
@@ -120,23 +117,21 @@ public class AdminFrame extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {
         new LoginFrame().setVisible(true);
         dispose();
-    }//GEN-LAST:event_btnLogoutActionPerformed
+    }
 
-    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {
         refreshTabel();
-    }//GEN-LAST:event_btnRefreshActionPerformed
+    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JLabel lblInfo;
     private javax.swing.JLabel lblJudul;
     private javax.swing.JScrollPane scrSemua;
     private javax.swing.JTable tblSemua;
-    // End of variables declaration//GEN-END:variables
 }

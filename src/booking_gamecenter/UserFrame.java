@@ -6,7 +6,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class UserFrame extends javax.swing.JFrame {
-
     private final Pengguna member;
     private final ArrayList<LocalDate> listTanggal = DataStore.pilihanTanggal();
 
@@ -123,9 +122,7 @@ public class UserFrame extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         lblSapaan = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
         tabPanel = new javax.swing.JTabbedPane();
@@ -347,32 +344,32 @@ public class UserFrame extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {
         new LoginFrame().setVisible(true);
         dispose();
-    }//GEN-LAST:event_btnLogoutActionPerformed
+    }
 
-    private void cmbKonsolActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbKonsolActionPerformed
+    private void cmbKonsolActionPerformed(java.awt.event.ActionEvent evt) {
         perbaruiInfoKonsol();
-    }//GEN-LAST:event_cmbKonsolActionPerformed
+    }
 
-    private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbStationActionPerformed
+    private void cmbStationActionPerformed(java.awt.event.ActionEvent evt) {
         perbaruiTotal();
         perbaruiJamTersedia();
-    }//GEN-LAST:event_cmbStationActionPerformed
+    }
 
-    private void cmbTanggalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTanggalActionPerformed
+    private void cmbTanggalActionPerformed(java.awt.event.ActionEvent evt) {
         perbaruiJamTersedia();
-    }//GEN-LAST:event_cmbTanggalActionPerformed
+    }
 
-    private void spnDurasiStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnDurasiStateChanged
+    private void spnDurasiStateChanged(javax.swing.event.ChangeEvent evt) {
         perbaruiTotal();
         perbaruiJamTersedia();
-    }//GEN-LAST:event_spnDurasiStateChanged
+    }
 
-    private void btnBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookingActionPerformed
+    private void btnBookingActionPerformed(java.awt.event.ActionEvent evt) {
         Station station = (Station) cmbStation.getSelectedItem();
         if (station == null) {
             JOptionPane.showMessageDialog(this, "Pilih station terlebih dahulu.",
@@ -416,13 +413,13 @@ public class UserFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.getMessage(),
                     "Jadwal Bentrok", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btnBookingActionPerformed
+    }
 
-    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {
         refreshTabel();
-    }//GEN-LAST:event_btnRefreshActionPerformed
+    }
 
-    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
+    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {
         int baris = tblBooking.getSelectedRow();
         if (baris == -1) {
             JOptionPane.showMessageDialog(this, "Pilih booking yang mau dibatalkan.",
@@ -452,9 +449,8 @@ public class UserFrame extends javax.swing.JFrame {
             refreshTabel();
             perbaruiJamTersedia();
         }
-    }//GEN-LAST:event_btnBatalActionPerformed
+    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBatal;
     private javax.swing.JButton btnBooking;
     private javax.swing.JButton btnLogout;
@@ -478,5 +474,5 @@ public class UserFrame extends javax.swing.JFrame {
     private javax.swing.JSpinner spnDurasi;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTable tblBooking;
-    // End of variables declaration//GEN-END:variables
+
 }

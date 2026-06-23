@@ -3,7 +3,6 @@ package booking_gamecenter;
 import javax.swing.JOptionPane;
 
 public class RegisterFrame extends javax.swing.JFrame {
-
     public RegisterFrame() {
         initComponents();
         gayaUi();
@@ -23,9 +22,7 @@ public class RegisterFrame extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         lblJudul = new javax.swing.JLabel();
         lblNama = new javax.swing.JLabel();
         txtNama = new javax.swing.JTextField();
@@ -118,9 +115,9 @@ public class RegisterFrame extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void btnDaftarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDaftarActionPerformed
+    private void btnDaftarActionPerformed(java.awt.event.ActionEvent evt) {
         String nama = txtNama.getText().trim();
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword());
@@ -152,14 +149,13 @@ public class RegisterFrame extends javax.swing.JFrame {
                 "Sukses", JOptionPane.INFORMATION_MESSAGE);
         new LoginFrame().setVisible(true);
         dispose();
-    }//GEN-LAST:event_btnDaftarActionPerformed
+    }
 
-    private void btnKembaliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKembaliActionPerformed
+    private void btnKembaliActionPerformed(java.awt.event.ActionEvent evt) {
         new LoginFrame().setVisible(true);
         dispose();
-    }//GEN-LAST:event_btnKembaliActionPerformed
+    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDaftar;
     private javax.swing.JButton btnKembali;
     private javax.swing.JLabel lblJudul;
@@ -171,5 +167,5 @@ public class RegisterFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtNama;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
-    // End of variables declaration//GEN-END:variables
+
 }

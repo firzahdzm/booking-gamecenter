@@ -3,7 +3,6 @@ package booking_gamecenter;
 import javax.swing.JOptionPane;
 
 public class LoginFrame extends javax.swing.JFrame {
-
     public LoginFrame() {
         initComponents();
         gayaUi();
@@ -22,9 +21,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         lblJudul = new javax.swing.JLabel();
         lblSub = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
@@ -103,9 +100,9 @@ public class LoginFrame extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void btnMasukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMasukActionPerformed
+    private void btnMasukActionPerformed(java.awt.event.ActionEvent evt) {
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword());
 
@@ -128,12 +125,12 @@ public class LoginFrame extends javax.swing.JFrame {
             new UserFrame(pengguna).setVisible(true);
         }
         dispose();
-    }//GEN-LAST:event_btnMasukActionPerformed
+    }
 
-    private void btnDaftarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDaftarActionPerformed
+    private void btnDaftarActionPerformed(java.awt.event.ActionEvent evt) {
         new RegisterFrame().setVisible(true);
         dispose();
-    }//GEN-LAST:event_btnDaftarActionPerformed
+    }
 
     public static void main(String args[]) {
         Tema.pasang();
@@ -144,7 +141,6 @@ public class LoginFrame extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDaftar;
     private javax.swing.JButton btnMasuk;
     private javax.swing.JLabel lblJudul;
@@ -153,5 +149,5 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblUsername;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
-    // End of variables declaration//GEN-END:variables
+
 }

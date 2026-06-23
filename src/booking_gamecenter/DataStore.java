@@ -10,17 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-/**
- * Satu file berisi seluruh data & model aplikasi:
- * - enum {@link JenisKonsol}    : 4 jenis console + harga/jam + deskripsi
- * - class {@link Station}       : unit tempat main (kode + jenis console)
- * - class {@link Pengguna}      : akun (role disimpan sebagai String)
- * - enum {@link StatusBooking}  : AKTIF / DIBATALKAN
- * - class {@link Booking}       : satu transaksi sewa
- * - class {@link DataStore}     : penyimpanan (ArrayList) + logika + persistensi CSV
- */
 public final class DataStore {
-
     public static final int JAM_BUKA = 10;
     public static final int JAM_TUTUP = 24;
     public static final int DURASI_MIN = 1;
@@ -66,8 +56,6 @@ public final class DataStore {
     private DataStore() {
     }
 
-    // ---------- Login & akun ----------
-
     public static Pengguna login(String username, String password) {
         for (Pengguna p : daftarAkun) {
             if (p.getUsername().equals(username) && p.cekPassword(password)) {
@@ -91,8 +79,6 @@ public final class DataStore {
         simpanAkun();
     }
 
-    // ---------- Console & station ----------
-
     public static JenisKonsol[] daftarJenisKonsol() {
         return JenisKonsol.values();
     }
@@ -115,8 +101,6 @@ public final class DataStore {
         }
         return hasil;
     }
-
-    // ---------- Booking ----------
 
     public static Booking buatBooking(Pengguna pemesan, Station station, LocalDate tanggal,
             int jamMulai, int durasiJam) {
@@ -190,8 +174,6 @@ public final class DataStore {
         }
         return "Rp " + hasil;
     }
-
-    // ---------- Persistensi CSV ----------
 
     private static void muatAkun() {
         daftarAkun.clear();
@@ -286,9 +268,7 @@ public final class DataStore {
     }
 }
 
-/** 4 jenis console yang disewakan, masing-masing punya harga/jam dan deskripsi. */
 enum JenisKonsol {
-
     PS5("PlayStation 5", 15000, "Konsol generasi terbaru Sony, grafis 4K dan loading super cepat."),
     PS4("PlayStation 4", 10000, "Konsol legendaris Sony dengan koleksi game paling banyak."),
     NINTENDO("Nintendo Switch", 12000, "Konsol hybrid Nintendo, cocok untuk main ramai-ramai."),
@@ -322,9 +302,7 @@ enum JenisKonsol {
     }
 }
 
-/** Unit tempat main: satu kode (mis. PS5-01) yang memakai satu JenisKonsol. */
 class Station {
-
     private final String kode;
     private final JenisKonsol konsol;
 
@@ -351,9 +329,7 @@ class Station {
     }
 }
 
-/** Akun pengguna. Role disimpan sebagai String: "ADMIN" atau "MEMBER". */
 class Pengguna {
-
     private final String nama;
     private final String username;
     private final String password;
@@ -391,9 +367,7 @@ enum StatusBooking {
     AKTIF, DIBATALKAN
 }
 
-/** Satu transaksi sewa: siapa, station mana, kapan, berapa lama, dan statusnya. */
 class Booking {
-
     private final int id;
     private final Pengguna pemesan;
     private final Station station;

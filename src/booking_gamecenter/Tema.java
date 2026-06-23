@@ -11,13 +11,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
-/**
- * Pusat tema gelap aplikasi (referensi warna dashboard SUSnet).
- * Memasang Nimbus + override warna supaya seluruh komponen tampil gelap,
- * lalu menyediakan helper untuk mewarnai tombol, label, dan tabel.
- */
 public final class Tema {
-
     public static final Color BG          = new Color(0x0D0F13);
     public static final Color PERMUKAAN   = new Color(0x161A21);
     public static final Color PERMUKAAN2  = new Color(0x1B212B);
@@ -134,9 +128,7 @@ public final class Tema {
         }
     }
 
-    /** Mewarnai teks kolom Status: AKTIF hijau, DIBATALKAN merah. */
     private static final class RendererStatus extends DefaultTableCellRenderer {
-
         @Override
         public Component getTableCellRendererComponent(JTable tabel, Object nilai,
                 boolean terpilih, boolean fokus, int baris, int kolom) {
