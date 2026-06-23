@@ -6,7 +6,20 @@ public class RegisterFrame extends javax.swing.JFrame {
 
     public RegisterFrame() {
         initComponents();
-        lblJudul.setFont(lblJudul.getFont().deriveFont(java.awt.Font.BOLD, 18f));
+        gayaUi();
+    }
+
+    private void gayaUi() {
+        Tema.latar(getContentPane());
+        Tema.judul(lblJudul, 20f);
+        Tema.terang(lblNama);
+        Tema.terang(lblUsername);
+        Tema.terang(lblPassword);
+        Tema.terang(lblKonfirmasi);
+        Tema.tombolPrimer(btnDaftar);
+        Tema.tombolAksen(btnKembali);
+        pack();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")

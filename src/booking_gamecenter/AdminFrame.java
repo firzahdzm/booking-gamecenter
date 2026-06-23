@@ -6,8 +6,21 @@ public class AdminFrame extends javax.swing.JFrame {
 
     public AdminFrame() {
         initComponents();
-        lblJudul.setFont(lblJudul.getFont().deriveFont(java.awt.Font.BOLD, 16f));
         refreshTabel();
+        gayaUi();
+    }
+
+    private void gayaUi() {
+        Tema.latar(getContentPane());
+        Tema.judul(lblJudul, 18f);
+        Tema.redup(lblInfo);
+        Tema.tombolNetral(btnLogout);
+        Tema.tombolPrimer(btnRefresh);
+        Tema.gayaTabel(tblSemua);
+        scrSemua.getViewport().setBackground(Tema.PERMUKAAN);
+        scrSemua.setBorder(javax.swing.BorderFactory.createLineBorder(Tema.BORDER));
+        pack();
+        setLocationRelativeTo(null);
     }
 
     private void refreshTabel() {
@@ -32,6 +45,7 @@ public class AdminFrame extends javax.swing.JFrame {
             });
         }
         tblSemua.setModel(model);
+        Tema.warnaiKolomStatus(tblSemua, 8);
         lblInfo.setText("Total booking: " + DataStore.semuaBooking().size()
                 + " | Aktif: " + DataStore.jumlahBookingAktif());
     }

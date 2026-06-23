@@ -20,6 +20,31 @@ public class UserFrame extends javax.swing.JFrame {
         perbaruiInfoKonsol();
         perbaruiJamTersedia();
         refreshTabel();
+        gayaUi();
+    }
+
+    private void gayaUi() {
+        Tema.latar(getContentPane());
+        panelBooking.setBackground(Tema.BG);
+        panelRiwayat.setBackground(Tema.BG);
+        Tema.judul(lblSapaan, 18f);
+        Tema.terang(lblKonsol);
+        Tema.terang(lblStation);
+        Tema.terang(lblTanggal);
+        Tema.terang(lblJam);
+        Tema.terang(lblDurasi);
+        Tema.aksenTeks(lblHarga);
+        Tema.redup(lblDeskripsi);
+        lblTotal.setForeground(Tema.CYAN);
+        Tema.tombolNetral(btnLogout);
+        Tema.tombolPrimer(btnBooking);
+        Tema.tombolNetral(btnRefresh);
+        Tema.tombolBahaya(btnBatal);
+        Tema.gayaTabel(tblBooking);
+        scrBooking.getViewport().setBackground(Tema.PERMUKAAN);
+        scrBooking.setBorder(javax.swing.BorderFactory.createLineBorder(Tema.BORDER));
+        pack();
+        setLocationRelativeTo(null);
     }
 
     private void muatPilihan() {
@@ -94,6 +119,7 @@ public class UserFrame extends javax.swing.JFrame {
             });
         }
         tblBooking.setModel(model);
+        Tema.warnaiKolomStatus(tblBooking, 6);
     }
 
     @SuppressWarnings("unchecked")

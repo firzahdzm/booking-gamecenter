@@ -6,7 +6,19 @@ public class LoginFrame extends javax.swing.JFrame {
 
     public LoginFrame() {
         initComponents();
-        lblJudul.setFont(lblJudul.getFont().deriveFont(java.awt.Font.BOLD, 24f));
+        gayaUi();
+    }
+
+    private void gayaUi() {
+        Tema.latar(getContentPane());
+        Tema.judul(lblJudul, 26f);
+        Tema.redup(lblSub);
+        Tema.terang(lblUsername);
+        Tema.terang(lblPassword);
+        Tema.tombolPrimer(btnMasuk);
+        Tema.tombolAksen(btnDaftar);
+        pack();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -124,17 +136,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDaftarActionPerformed
 
     public static void main(String args[]) {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
+        Tema.pasang();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginFrame().setVisible(true);
